@@ -19,6 +19,12 @@ MEDIA_ROOT = os.path.join(ROOT_DIR, '.media') #(settings.MEDIA_ROOT)
 MEDIA_URL = '/media/'#유저가 업로드한 파일에 접근 prefix URL(settings.MEDIA_URL)
 STATIC_URL = '/static/'
 TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+
+STATICFILES_DIRS = [
+    STATIC_DIR
+]
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/

@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -6,9 +7,30 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
 </head>
 <body>
-{% block content %}
-{% endblock %}
+    <div id="wrap">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a href="#" class="navbar-brand">Instagram</a>
+            <form action="#" class="form-inline ml-md-auto">
+                <input type="text" class="form-control" placeholder="search">
+            </form>
+            <ul class="navbar-nav ml-md-auto">
+                <li class="nav-item mr-sm-1">
+                    <a href="" class="btn btn-outline-secondary">Explore</a>
+                </li>
+                <li class="nav-item mr-sm-1">
+                    <a href="" class="btn btn-outline-secondary">Favorites</a>
+                </li>
+                <li class="nav-item mr-sm-1">
+                    <a href="" class="btn btn-outline-secondary">Profile</a>
+                </li>
+            </ul>
+        </nav>
+        {% block content %}
+        {% endblock %}
+    </div>
 </body>
 </html>
