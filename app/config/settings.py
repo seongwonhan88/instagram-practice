@@ -18,7 +18,7 @@ ROOT_DIR = os.path.dirname(BASE_DIR) # root = instgram folder
 MEDIA_ROOT = os.path.join(ROOT_DIR, '.media') #(settings.MEDIA_ROOT)
 MEDIA_URL = '/media/'#유저가 업로드한 파일에 접근 prefix URL(settings.MEDIA_URL)
 STATIC_URL = '/static/'
-
+TEMPLATES = os.path.join(BASE_DIR,'templates')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -62,7 +62,9 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            TEMPLATES,
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
