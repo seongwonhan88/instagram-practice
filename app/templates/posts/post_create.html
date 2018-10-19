@@ -1,7 +1,13 @@
-{% load static %}
-    {% block content %}
-        <div>
-            <input type="file">
-            <button type="submit">create post</button>
-        </div>
-    {% endblock %}
+{% extends 'base.html' %}
+{% block content %}
+    <div>
+        <h2>Add Post</h2>
+        <form action="">
+            <div class="form-group">
+                <label for="id-photo">upload photo</label>
+                <input type="file" id="id-photo" class="form-control-file">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">create post</button>
+        </form>
+    </div>
+{% endblock %}
