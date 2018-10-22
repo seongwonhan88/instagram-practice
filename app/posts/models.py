@@ -1,9 +1,9 @@
 from django.db import models
-
+from django.conf import settings
 
 class Post(models.Model):
     author = models.ForeignKey(
-        'members.User',
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         verbose_name= '작성자',
     )
@@ -27,7 +27,7 @@ class Comment(models.Model):
         # related_name=
     )
     author = models.ForeignKey(
-        'members.User',
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         verbose_name='작성자'
     )
