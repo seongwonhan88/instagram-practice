@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from .forms import LoginForms
 
 
@@ -25,10 +25,10 @@ def login_view(request):
         # if authentication success, session/cookie base login / redirect to posts:post-list page
         # if fail, let them know log in failed.
         user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
-        if user is not None: #auth success
+        if user is not None:  # auth success
             login(request, user)
             return redirect('posts:post-list')
-        else: #auth fail
+        else:  # auth fail
             pass
 
     else:
@@ -37,3 +37,14 @@ def login_view(request):
             'form': form,
         }
         return render(request, 'members/login.html', context)
+
+
+def logout_view(request):
+    # url = /members/logout
+    # no template > redirect to post:post-list
+    # base.html 'logout'button takes to this view
+    if request.method == 'POST':
+        logout(request)
+        return redirect('posts:post-list')
+    else:
+        pass
