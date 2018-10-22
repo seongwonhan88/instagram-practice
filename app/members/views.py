@@ -66,6 +66,7 @@ def signup_view(request):
     context = {
         'form': form,
     }
+
     if request.method == 'POST':
         # request.POST, username, password1, password2를 해당 이름의 변수에 할당
         # username = User가 이미 있다면 return HttpResponse 문자열로 {{usernmae}} 사용중입니다.
@@ -78,21 +79,15 @@ def signup_view(request):
         password2 = request.POST['password2']
 
         if User.objects.filter(username=username).exists():
-            # return HttpResponse(f'{username} already exists')
             error_message = f'{username} already exists'
             context.update({'error_message': error_message, })
-            return render(request, 'members/signup.html', context)
 
-        if password1 != password2:
-            # return HttpResponse(f'password1 and password2 do not match')
+        elif password1 != password2:
             error_message = f'password1 and password2 do not match'
             context.update({'error_message': error_message, })
-            return render(request, 'members/signup.html', context)
+        else:
+            user = User.objects.create_user(username=username, password=password1)
+            login(request, user)
+            return redirect('posts:post-list')
 
-        user = User.objects.create_user(username=username, password=password1)
-        login(request, user)
-        return redirect('posts:post-list')
-
-    else:
-
-        return render(request, 'members/signup.html', context)
+    return render(request, 'members/signup.html', context)
