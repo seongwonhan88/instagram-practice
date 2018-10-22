@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from .forms import LoginForms
+from .forms import LoginForms, SignupForms
 
 
 def login_view(request):
@@ -48,3 +48,24 @@ def logout_view(request):
         return redirect('posts:post-list')
     else:
         pass
+
+def signup_view(request):
+    # url = /members/signup/
+    # template : members/signup.html
+    # Form
+    #   SignupForm
+    #       username, password1, password2
+    # rest take login.html attrs
+
+    # GET 요청 시 해당 템플릿 보여주도록 처리
+    #  base.html에 있는 signup 버튼이 이 쪽으로 올 수 있도록 url 링크걸기
+    if request.method == 'POST':
+        pass
+    else:
+
+        form = SignupForms()
+        context = {
+            'form':form,
+        }
+
+        return render(request, 'members/signup.html', context)
