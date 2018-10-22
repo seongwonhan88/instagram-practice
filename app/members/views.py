@@ -51,6 +51,7 @@ def logout_view(request):
     else:
         pass
 
+
 def signup_view(request):
     # url = /members/signup/
     # template : members/signup.html
@@ -61,6 +62,10 @@ def signup_view(request):
 
     # GET 요청 시 해당 템플릿 보여주도록 처리
     #  base.html에 있는 signup 버튼이 이 쪽으로 올 수 있도록 url 링크걸기
+    form = SignupForms()
+    context = {
+        'form': form,
+    }
     if request.method == 'POST':
         # request.POST, username, password1, password2를 해당 이름의 변수에 할당
         # username = User가 이미 있다면 return HttpResponse 문자열로 {{usernmae}} 사용중입니다.
@@ -73,21 +78,21 @@ def signup_view(request):
         password2 = request.POST['password2']
 
         if User.objects.filter(username=username).exists():
-            return HttpResponse(f'{username} already exists')
+            # return HttpResponse(f'{username} already exists')
+            error_message = f'{username} already exists'
+            context.update({'error_message': error_message, })
+            return render(request, 'members/signup.html', context)
 
         if password1 != password2:
-            return HttpResponse(f'password1 and password2 does not match')
+            # return HttpResponse(f'password1 and password2 do not match')
+            error_message = f'password1 and password2 do not match'
+            context.update({'error_message': error_message, })
+            return render(request, 'members/signup.html', context)
 
         user = User.objects.create_user(username=username, password=password1)
         login(request, user)
         return redirect('posts:post-list')
 
-
     else:
-
-        form = SignupForms()
-        context = {
-            'form':form,
-        }
 
         return render(request, 'members/signup.html', context)
