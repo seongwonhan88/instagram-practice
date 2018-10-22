@@ -23,15 +23,11 @@ def post_list(request):
 
 
 def post_create(request):
-    # 1. posts/post_create.html
-    # form is
-    # button[type=submit]
-    # input[type=file]
+    # view 에서 User가 로그인 상태가 아니면
+    # post:post-list로 리다이렉트
+    if not request.user.is_authenticated:
+        return redirect('posts:post-list')
 
-    # 2. /posts/create/URL -> view 연결
-    # 3. render사용해서 template return
-    # 4. base.html nav부분에 '+add post' 텍스트 갖는 a link 추가
-    # 5  {% url %} tag 사용해서 포스트 생성으로 링크 걸어주기
     if request.method == 'POST':
         Post.objects.create(
             author=request.user,
