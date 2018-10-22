@@ -36,7 +36,7 @@
                 </li>
                 {% if user.is_authenticated %}
                 <li class="nav-item mr-sm-1">
-                    <form action="{% url 'members:logout-view' %}" method="POST"> # action 으로 url 경로지정
+                    <form action="{% url 'members:logout-view' %}" method="POST">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-outline-primary">Logout</button>
                     </form>
