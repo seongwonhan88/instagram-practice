@@ -2,11 +2,9 @@
 {% block content %}
     <div>
         <h2>Add Post</h2>
-        <form action="">
-            <div class="form-group">
-                <label for="id-photo">upload photo</label>
-                <input type="file" id="id-photo" class="form-control-file">
-            </div>
+        <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form }}
             <button type="submit" class="btn btn-primary btn-block">create post</button>
         </form>
     </div>
