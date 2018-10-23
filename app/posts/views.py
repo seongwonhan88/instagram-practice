@@ -31,7 +31,7 @@ def post_create(request):
     if request.method == 'POST':
         form = PostCreateForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save(author=request.user)
+            form.save(author=request.user,)
             return redirect('posts:post-list')
     else:
         # get 요청의 경우 빈 Form 인스턴스를 context에 담아서 저달

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Post
+from .models import Post, Comment
 
 
 class PostCreateForm(forms.Form):
@@ -24,4 +24,13 @@ class PostCreateForm(forms.Form):
         if self.errors:
             raise ValueError('Post validation failed')
         post = Post.objects.create(photo=self.cleaned_data['photo'], **kwargs)
+        # comment 항목이 있다면, 생성한 Post에 연결되는 comment 를 생성
+        # post=post, author=request.user
+        comment_content = self.cleaned_data.get('comment')
+        if comment_content:
+            post.comments.create(
+                author = post.author,
+                content=comment_content,
+            )
+        # post_list 에서 댓글 목록 출력
         return post
