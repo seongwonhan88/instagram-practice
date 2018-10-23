@@ -49,10 +49,23 @@ class SignupForms(forms.Form):
             raise forms.ValidationError('that username is taken')
         return username
 
-    def clean(self):
-        # password1 == password2 ?
-        super().clean()
-        password1 = self.cleaned_data.get('password1')
-        password2 = self.cleaned_data.get('password2')
+    def clean_password2(self):
+        password1 = self.cleaned_data['password1']
+        password2 = self.cleaned_data['password2']
         if password1 != password2:
-            raise forms.ValidationError('password1 and password2 does not match')
+            raise forms.ValidationError('passwords do not match')
+        return password2
+
+    # def clean(self):
+    #     # password1 == password2 ?
+    #     super().clean()
+    #     password1 = self.cleaned_data.get('password1')
+    #     password2 = self.cleaned_data.get('password2')
+    #     if password1 != password2:
+    #         raise forms.ValidationError('password1 and password2 does not match')
+
+    def save(self):
+        if self.errors:
+            raise ValueError('Form validation failed')
+        user = User.objects.create_user(username=self.cleaned_data['username'], password=self.cleaned_data['password1'])
+        return user
