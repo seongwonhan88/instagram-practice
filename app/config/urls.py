@@ -23,6 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('posts/', include('posts.urls')),
     path('members/', include('members.urls')),
+    path('', views.index, name='index'),
+    # path('', RedirectView.as_view(pattern_name='posts:post-list', name='index')),
 ]
 # MEDIA_URL로 시작하는 URL은 statci()내의 serve()함수를 통해 처리
 urlpatterns += static(
