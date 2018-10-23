@@ -19,25 +19,26 @@ def login_view(request):
     # login form
     # username, password input
     # password widget PasswordInput
+    context = {}
+
     if request.method == 'POST':
         # request.POST gets data
         # username and password put to username and password
         # username/password -> check
         # if authentication success, session/cookie base login / redirect to posts:post-list page
         # if fail, let them know log in failed.
-        user = authenticate(request, username=request.POST['username'], password=request.POST['password'])
-        if user is not None:  # auth success
-            login(request, user)
+        form = LoginForms(request.POST)
+        if form.is_valid():
+            login(request, form.user)
+            next = request.GET.get('next')
+            if next:
+                return redirect(next)
             return redirect('posts:post-list')
-        else:  # auth fail
-            pass
-
     else:
         form = LoginForms()
-        context = {
-            'form': form,
-        }
-        return render(request, 'members/login.html', context)
+
+    context['form'] = form
+    return render(request, 'members/login.html', context)
 
 
 def logout_view(request):
@@ -71,10 +72,6 @@ def signup_view(request):
         form = SignupForms(request.POST)
         if form.is_valid():
             user = form.save()
-        #     user = User.objects.create_user(
-        #         username = form.cleaned_data['username'],
-        #         password = form.cleaned_data['password1'],
-        #     )
             login(request, user)
             return redirect('posts:post-list')
     else:

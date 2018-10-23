@@ -1,5 +1,7 @@
 from django import forms
 
+from .models import Post
+
 
 class PostCreateForm(forms.Form):
     photo = forms.ImageField(
@@ -17,3 +19,9 @@ class PostCreateForm(forms.Form):
         ),
         required=False,
     )
+
+    def save(self, **kwargs):
+        if self.errors:
+            raise ValueError('Post validation failed')
+        post = Post.objects.create(photo=self.cleaned_data['photo'], **kwargs)
+        return post

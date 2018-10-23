@@ -1,8 +1,12 @@
 from django import forms
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 
 
 class LoginForms(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args,**kwargs)
+        self._user = None
     username = forms.CharField(
         widget=forms.TextInput(
             attrs={
@@ -18,6 +22,20 @@ class LoginForms(forms.Form):
         )
     )
 
+    def clean(self):
+        super().clean()
+        username = self.cleaned_data['username']
+        password = self.cleaned_data['password']
+        user = authenticate(username=username, password=password)
+        if user is None:
+            raise forms.ValidationError('username or password is invalid')
+        self._user = user
+
+    @property
+    def user(self):
+        if self.errors:
+            raise ValueError('form validation failed')
+        return self._user
 
 class SignupForms(forms.Form):
     username = forms.CharField(
