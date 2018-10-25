@@ -1,3 +1,5 @@
+import re
+
 from django.db import models
 from django.conf import settings
 
@@ -20,6 +22,7 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
+    TAG_PATTERN = re.compile(r'#(?P<tag>\w+)')
     post = models.ForeignKey(
         'Post',
         on_delete=models.CASCADE,
@@ -45,6 +48,10 @@ class Comment(models.Model):
         verbose_name = '댓글'
         verbose_name_plural = f'{verbose_name} 목록'
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        tags = [HashTag.objects.get_or_create(name=name)[0] for name in re.findall(self.TAG_PATTERN, self.content)]
+        self.tags.set(tags)
 
 class HashTag(models.Model):
     name = models.CharField('태그명', max_length=100, unique=True)

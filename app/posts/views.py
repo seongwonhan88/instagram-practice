@@ -1,9 +1,7 @@
-import re
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
-# from members.models import User
 from .forms import PostCreateForm, CommentCreateForm, CommentForm, PostForm
 from .models import Post, Comment, HashTag
 
@@ -71,14 +69,8 @@ def comment_create(request, post_pk):
         post = Post.objects.get(pk=post_pk)
         form = CommentForm(request.POST)
         if form.is_valid():
-            # form.save(author=request.user, post=post)
             comment = form.save(commit=False)
             comment.author = request.user
             comment.post = post
             comment.save()
-
-            p = re.compile(r'#(?P<tag>\w+)')
-            tags = [HashTag.objects.get_or_create(name=name)[0] for name in re.findall(p, comment.content)]
-            comment.tags.set(tags)
             return redirect('posts:post-list')
-
