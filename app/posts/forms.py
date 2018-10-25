@@ -29,17 +29,18 @@ class PostCreateForm(forms.Form):
         comment_content = self.cleaned_data.get('comment')
         if comment_content:
             post.comments.create(
-                author = post.author,
+                author=post.author,
                 content=comment_content,
             )
         # post_list 에서 댓글 목록 출력r
         return post
 
+
 class CommentCreateForm(forms.Form):
     content = forms.CharField(
         widget=forms.Textarea(
             attrs={
-                'class':'form-control',
+                'class': 'form-control',
                 'rows': 2,
             }
         ),
@@ -52,3 +53,17 @@ class CommentCreateForm(forms.Form):
             content=content,
             **kwargs
         )
+
+
+class CommentForm(forms.ModelForm):
+    # Comment Model 클래스를 사용하는 Mocel Form 구현
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(
+                attrs={
+                    'class': 'form-control'
+                }
+            )
+        }

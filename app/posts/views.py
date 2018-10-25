@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 # from members.models import User
-from .forms import PostCreateForm, CommentCreateForm
+from .forms import PostCreateForm, CommentCreateForm, CommentForm
 from .models import Post, Comment
 
 
@@ -56,7 +56,12 @@ def comment_create(request, post_pk):
     """
     if request.method == 'POST':
         post = Post.objects.get(pk=post_pk)
-        form = CommentCreateForm(request.POST)
+        form = CommentForm(request.POST)
         if form.is_valid():
-            form.save(author=request.user, post=post)
+            # form.save(author=request.user, post=post)
+            comment = form.save(commit=False)
+            comment.author = request.user
+            comment.post = post
+            comment.save()
             return redirect('posts:post-list')
+
