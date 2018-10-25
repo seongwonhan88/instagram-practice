@@ -2,6 +2,29 @@ from django import forms
 
 from .models import Post, Comment
 
+class PostForm(forms.ModelForm):
+    comment = forms.CharField(
+        label='Caption',
+        required=False,
+        widget=forms.Textarea(
+            attrs={
+                'class':'form-control',
+                'rows': 2,
+            }
+        )
+
+    )
+    class Meta:
+        model = Post
+        fields=['photo']
+        widgets={
+            'photo': forms.ClearableFileInput(
+                attrs={
+                    'class':'form-control-file',
+                }
+            )
+        }
+
 
 class PostCreateForm(forms.Form):
     photo = forms.ImageField(
