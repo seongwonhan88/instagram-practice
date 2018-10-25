@@ -34,3 +34,21 @@ class PostCreateForm(forms.Form):
             )
         # post_list 에서 댓글 목록 출력r
         return post
+
+class CommentCreateForm(forms.Form):
+    content = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                'class':'form-control',
+                'rows': 2,
+            }
+        ),
+    )
+
+    def save(self, post, **kwargs):
+        post.comments.create(**kwargs)
+        content = self.cleaned_data['content']
+        return post.comments.create(
+            content=content,
+            **kwargs
+        )

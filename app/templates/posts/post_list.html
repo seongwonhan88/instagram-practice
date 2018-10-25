@@ -22,9 +22,9 @@
 {#                    1. 유저가 로그인 한 경우에만 보여지도록 함#}
 {#                    2. 내부 요소는 textarea[name=content]와 버튼하나#}
                         {% if user.is_authenticated %}
-                        <form action="{% url 'posts:comment-create' post_pk=post.pk%}" method="POST">
+                        <form action="{% url 'posts:comment-create' post_pk=post.pk %}" method="POST">
                             {% csrf_token %}
-                            <textarea name="" id="" cols="30" rows="2" class="form-control"></textarea>
+                            {{ comment_form.content }}
                             <button type="submit" class="btn btn-primary btn-block">작성</button>
                         </form>
                         {% endif %}

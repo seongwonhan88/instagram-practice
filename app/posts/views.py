@@ -2,8 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 # from members.models import User
-from .forms import PostCreateForm
-from .models import Post
+from .forms import PostCreateForm, CommentCreateForm
+from .models import Post, Comment
 
 
 def post_list(request):
@@ -15,9 +15,9 @@ def post_list(request):
     # 3. 모든 포스트 객체에 대한 쿼리셋을 render의 인수로 전달
 
     posts = Post.objects.all()
-
     context = {
         'posts': posts,
+        'comment_form': CommentCreateForm(),
     }
 
     return render(request, 'posts/post_list.html', context)
@@ -55,5 +55,8 @@ def comment_create(request, post_pk):
     :return:
     """
     if request.method == 'POST':
-        pass
-    return redirect('posts:post-list')
+        post = Post.objects.get(pk=post_pk)
+        form = CommentCreateForm(request.POST)
+        if form.is_valid():
+            form.save(author=request.user, post=post)
+            return redirect('posts:post-list')
