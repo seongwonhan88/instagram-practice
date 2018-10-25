@@ -32,5 +32,5 @@ class PostCreateForm(forms.Form):
                 author = post.author,
                 content=comment_content,
             )
-        # post_list 에서 댓글 목록 출력
+        # post_list 에서 댓글 목록 출력r
         return post
