@@ -18,6 +18,9 @@ from django.contrib import admin
 from django.urls import path, include
 
 from config import views, settings
+from posts.views import tag_post_list
+
+app_name = "config"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,6 +28,8 @@ urlpatterns = [
     path('members/', include('members.urls')),
     path('', views.index, name='index'),
     # path('', RedirectView.as_view(pattern_name='posts:post-list', name='index')),
+    path('explore/tags/<tag_name>/', tag_post_list, name='tag-post-list'),
+
 ]
 # MEDIA_URL로 시작하는 URL은 statci()내의 serve()함수를 통해 처리
 urlpatterns += static(

@@ -54,7 +54,7 @@ class Comment(models.Model):
         def save_html():
             self._html = re.sub(
                 self.TAG_PATTERN,
-                r'<a href="./explore/tags/\g<tag_name>/">#\g<tag_name></a>',
+                r'<a href="/explore/tags/\g<tag>/">#\g<tag></a>',
                 self.content
             )
         def save_tags():

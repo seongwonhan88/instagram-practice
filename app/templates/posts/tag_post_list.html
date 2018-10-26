@@ -1,34 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
-    <div>
+    <div class="row">
         {% for post in posts %}
-            <div class="col col-lg-4 offset-lg-4 mb-4">
-                <div class='card'>
-                    <div class="card-header">
-                        {{ post.author }}
-                    </div>
-                    <div class="card-body">
-                        <img src="{{ post.photo.url }}" class="card-img-top">
-
-
-                        <ul class="list-unstyled">
-                            {% for comment in post.comments.all %}
-                            <li><strong>{{ comment.author }}</strong>
-                                <span>{{ comment.html|safe }}</span></li>
-                            {% endfor %}
-                        </ul>
-{#                    댓글작성 폼 구현 #}
-{#                    1. 유저가 로그인 한 경우에만 보여지도록 함#}
-{#                    2. 내부 요소는 textarea[name=content]와 버튼하나#}
-                        {% if user.is_authenticated %}
-                        <form action="{% url 'posts:comment-create' post_pk=post.pk %}" method="POST">
-                            {% csrf_token %}
-                            {{ comment_form }}
-                            <button type="submit" class="btn btn-primary btn-block">작성</button>
-                        </form>
-                        {% endif %}
-                    </div>
-
+            <div class="col-4">
+                <div class="row square">
+                <a href="" class="thumbnail" style="background-image: url('{{ post.photo.url }}')">
+                </a>
                 </div>
             </div>
 

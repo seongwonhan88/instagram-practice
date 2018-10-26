@@ -14,7 +14,7 @@
     <div id="wrap">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a href="{% url 'posts:post-list' %}" class="navbar-brand">Instagram</a>
-            <form action="{% url 'posts:tag-post-list' tag_name="search" %}" class="form-inline ml-md-auto">
+            <form action="{% url 'tag-post-list' tag_name="search" %}" class="form-inline ml-md-auto">
                 <input type="text" class="form-control" placeholder="search"  name="search">
             </form>
             <ul class="navbar-nav ml-md-auto">
