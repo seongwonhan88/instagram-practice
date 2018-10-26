@@ -1,3 +1,4 @@
+import re
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -5,9 +6,14 @@ from django.shortcuts import render, redirect
 from .forms import CommentForm, PostForm
 from .models import Post, HashTag
 
+def tag_search(request):
+    search_keyword = request.GET.get('search_keyword')
+    substitute_keyword = re.sub(r'#|\s+', '', search_keyword)
+    return redirect('tag-post-list', substitute_keyword)
+
 
 def tag_post_list(request, tag_name):
-    posts = Post.objects.filter(comments__tags__name__exact=tag_name)
+    posts = Post.objects.filter(comments__tags__name__exact=tag_name).distinct()
     context={
         'posts':posts,
     }

@@ -9,14 +9,31 @@
     <title>Document</title>
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+    <style>
+        .square {
+ 		}
+		.square:before {
+			content: '';
+			padding: 50% 0;
+			display: inline-block;
+		}
+		.square > .thumbnail {
+			display: block;
+			width: 100%;
+			background-size: cover;
+			background-position: center center;
+		}
+    </style>
 </head>
 <body>
     <div id="wrap">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a href="{% url 'posts:post-list' %}" class="navbar-brand">Instagram</a>
-            <form action="{% url 'tag-post-list' tag_name="search" %}" class="form-inline ml-md-auto">
-                <input type="text" class="form-control" placeholder="search"  name="search">
+
+            <form action="{% url 'posts:tag-search' %}" class="form-inline ml-md-auto">
+                <input type="text" class="form-control" placeholder="search"  name="search_keyword">
             </form>
+
             <ul class="navbar-nav ml-md-auto">
                 <li class="nav-item mr-sm-1">
                     <a href="" class="btn btn-outline-secondary">Explore</a>
