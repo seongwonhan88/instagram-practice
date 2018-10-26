@@ -2,9 +2,16 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
-from .forms import PostCreateForm, CommentCreateForm, CommentForm, PostForm
-from .models import Post, Comment, HashTag
+from .forms import CommentForm, PostForm
+from .models import Post, HashTag
 
+
+def tag_post_list(request, tag_name):
+    posts = Post.objects.filter(comments__tags__name__exact=tag_name)
+    context={
+        'posts':posts,
+    }
+    return render(request, 'posts/tag_post_list.html', context)
 
 def post_list(request):
     # 1. Post 모델에 created_at(생성시간)
@@ -17,7 +24,7 @@ def post_list(request):
     posts = Post.objects.all()
     context = {
         'posts': posts,
-        'comment_form': CommentCreateForm(),
+        'comment_form': CommentForm(),
     }
 
     return render(request, 'posts/post_list.html', context)
@@ -74,3 +81,4 @@ def comment_create(request, post_pk):
             comment.post = post
             comment.save()
             return redirect('posts:post-list')
+

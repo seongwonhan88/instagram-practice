@@ -53,6 +53,18 @@ class Comment(models.Model):
         tags = [HashTag.objects.get_or_create(name=name)[0] for name in re.findall(self.TAG_PATTERN, self.content)]
         self.tags.set(tags)
 
+    @property
+    def html(self):
+        #자신의 컨텐츠 속성값에서 #문자열을
+        substitutes = []
+        pattern = re.compile(r'#(?P<tag_name>\w+)')
+        string = re.sub(pattern, r'<a href="./explore/tags/\g<tag_name>/">#\g<tag_name></a>', self.content)
+        # for item in string_origin:
+        #     # substitutes.append(self.TAG_PATTERN.sub(f'<a href="/explore/tags/{item[1:]}">{item}</a>',item))
+        #     substitutes.append(pattern.sub('<a href="./explore/tags/g<tag_name>"></a>'.format(item[1:],item),item))
+        # string_hashtag = ' '.join(substitutes)
+        return string
+
 class HashTag(models.Model):
     name = models.CharField('태그명', max_length=100, unique=True)
 
