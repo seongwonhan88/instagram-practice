@@ -1,7 +1,8 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from .forms import LoginForms, SignupForms
+from .forms import LoginForms, SignupForms, UserProfileForm
 
 
 def login_view(request):
@@ -80,3 +81,11 @@ def signup_view(request):
         form = SignupForms()
     context['form'] = form
     return render(request, 'members/signup.html', context)
+
+@login_required
+def profile(request):
+    form = UserProfileForm(instance=request.user)
+    context = {
+        'form':form,
+    }
+    return render(request, 'members/profile.html', context)

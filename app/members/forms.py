@@ -82,16 +82,15 @@ class SignupForms(forms.Form):
             raise forms.ValidationError('passwords do not match')
         return password2
 
-    # def clean(self):
-    #     # password1 == password2 ?
-    #     super().clean()
-    #     password1 = self.cleaned_data.get('password1')
-    #     password2 = self.cleaned_data.get('password2')
-    #     if password1 != password2:
-    #         raise forms.ValidationError('password1 and password2 does not match')
-
     def save(self):
         if self.errors:
             raise ValueError('Form validation failed')
         user = User.objects.create_user(username=self.cleaned_data['username'], password=self.cleaned_data['password1'])
         return user
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = [
+            'email', 'last_name', 'first_name', 'last_name', 'img_profile', 'site', 'introduce'
+        ]
