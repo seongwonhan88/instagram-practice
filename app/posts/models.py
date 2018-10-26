@@ -43,27 +43,31 @@ class Comment(models.Model):
         # on_delete=models.SET_NULL,
         # null=True
     )
+    # Comment의 save()가 호출될 때 content의 값을 사용해서 이 필드를 자동으로 채운 후 저장하기
+    _html = models.TextField('HashTag link', blank=True)
 
     class Meta:
         verbose_name = '댓글'
         verbose_name_plural = f'{verbose_name} 목록'
 
     def save(self, *args, **kwargs):
+        def save_html():
+            self._html = re.sub(
+                self.TAG_PATTERN,
+                r'<a href="./explore/tags/\g<tag_name>/">#\g<tag_name></a>',
+                self.content
+            )
+        def save_tags():
+            tags = [HashTag.objects.get_or_create(name=name)[0] for name in re.findall(self.TAG_PATTERN, self.content)]
+            self.tags.set(tags)
+
+        save_html()
         super().save(*args, **kwargs)
-        tags = [HashTag.objects.get_or_create(name=name)[0] for name in re.findall(self.TAG_PATTERN, self.content)]
-        self.tags.set(tags)
+        save_tags()
 
     @property
     def html(self):
-        #자신의 컨텐츠 속성값에서 #문자열을
-        substitutes = []
-        pattern = re.compile(r'#(?P<tag_name>\w+)')
-        string = re.sub(pattern, r'<a href="./explore/tags/\g<tag_name>/">#\g<tag_name></a>', self.content)
-        # for item in string_origin:
-        #     # substitutes.append(self.TAG_PATTERN.sub(f'<a href="/explore/tags/{item[1:]}">{item}</a>',item))
-        #     substitutes.append(pattern.sub('<a href="./explore/tags/g<tag_name>"></a>'.format(item[1:],item),item))
-        # string_hashtag = ' '.join(substitutes)
-        return string
+        return self._html
 
 class HashTag(models.Model):
     name = models.CharField('태그명', max_length=100, unique=True)
