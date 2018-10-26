@@ -1,6 +1,14 @@
 from django import forms
-from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, get_user_model
+
+User = get_user_model()
+# 1. 사용자 모델 클래스에 대한 참조가 필요할 때 get_user_model()사용
+#  settings.AUTH_USER_MODEL의 값을 사용해서 사용자 모델 클래스 반환
+# 2. 사용자 모델 클래스에 대한 관계를 설정할 때
+#  관계필드(ForeignKey, ManyToMany, OneToOne)의 관계부분에
+#  settings.AUTH_USER_MODEL(문자열)을 사용
+# from django.contrib.auth.models import User
+# from members.models import User
 
 
 class LoginForms(forms.Form):
