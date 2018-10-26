@@ -84,8 +84,14 @@ def signup_view(request):
 
 @login_required
 def profile(request):
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            # 수정이 완료되면 message모듈을 사용해서 템플릿에 수정완료 메시지를 표시(숙제)
+
     form = UserProfileForm(instance=request.user)
-    context = {
-        'form':form,
+    context={
+        'form':form
     }
     return render(request, 'members/profile.html', context)
