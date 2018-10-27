@@ -23,6 +23,10 @@ class User(AbstractUser):
             return self.img_profile.url
         return static('images/blank_user.png')
 
+    def like_post_toggle(self, post):
+        # 전달받은 post에 대한 like를 toggle 처리
+        pass
+
     class Meta:
         verbose_name = '사용자'
         verbose_name_plural = f'{verbose_name} 목록'

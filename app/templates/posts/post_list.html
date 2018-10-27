@@ -14,9 +14,16 @@
                     </div>
                     <div class="card-body">
                         <img src="{{ post.photo.url }}" class="card-img-top">
-
+                        <form action="{% url 'posts:post-like-toggle' post_pk=post.pk %}" method="POST">
+                            {% csrf_token %}
+                            <button class="btn btn-primary" type="submit">like/unlike</button>
+                        </form>
 
                         <ul class="list-unstyled">
+                        <div>
+                            <span>liked</span>
+                            <strong>{{ post.like_users.all|join:', ' }}</strong>
+                        </div>
                             {% for comment in post.comments.all %}
                             <li><strong>{{ comment.author }}</strong>
                                 <span>{{ comment.html|safe }}</span></li>

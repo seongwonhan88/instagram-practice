@@ -2,6 +2,11 @@
 {% block content %}
     <div>
         <h2>Profile</h2>
+        {% if messages %}
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        {% endif %}
         <form action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             {% for field in form %}
@@ -13,7 +18,6 @@
                 </div>
             {% endfor %}
             <button class="btn btn-primary btn-block">edit</button>
-
         </form>
     </div>
 

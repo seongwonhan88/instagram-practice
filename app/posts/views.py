@@ -4,7 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 from .forms import CommentForm, PostForm
-from .models import Post, HashTag
+from .models import Post, HashTag, PostLike
+
 
 def tag_search(request):
     search_keyword = request.GET.get('search_keyword')
@@ -88,3 +89,19 @@ def comment_create(request, post_pk):
             comment.save()
             return redirect('posts:post-list')
 
+def post_like_toggle(request, post_pk):
+    # url : 'posts/postpk/like-toggle/
+    # url name : posts:post-like-toggle
+    # post method only
+
+    # request.user 가 postpk에 해당하는 post에 like toggle처리
+    if request.method == 'POST':
+        post = Post.objects.all()
+        post_like = PostLike.objects.filter(user=request.user, post_id=post_pk)
+        if Post.objects.filter(pk=post_pk, like_users=request.user).exists():
+            post_like.delete()
+        else:
+            PostLike.objects.filter(user=request.user, post_id=post_pk).create()
+
+    context={'post': post, 'post_like':post_like}
+    return render(request, 'posts/post_list.html', context)

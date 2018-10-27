@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
@@ -89,9 +90,10 @@ def profile(request):
         if form.is_valid():
             form.save()
             # 수정이 완료되면 message모듈을 사용해서 템플릿에 수정완료 메시지를 표시(숙제)
-
+            messages.success(request,'Profile update succeeded')
     form = UserProfileForm(instance=request.user)
     context={
         'form':form
     }
     return render(request, 'members/profile.html', context)
+
