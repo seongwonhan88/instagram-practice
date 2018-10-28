@@ -15,19 +15,13 @@ def tag_search(request):
 
 def tag_post_list(request, tag_name):
     posts = Post.objects.filter(comments__tags__name__exact=tag_name).distinct()
-    context={
-        'posts':posts,
+    context = {
+        'posts': posts,
     }
     return render(request, 'posts/tag_post_list.html', context)
 
+
 def post_list(request):
-    # 1. Post 모델에 created_at(생성시간)
-    # modified_at(수정시간)
-    # 두 필드 추가
-
-    # 2. Post 모델이 기본적으로 pk내림차순으로 정렬되도록 설정
-    # 3. 모든 포스트 객체에 대한 쿼리셋을 render의 인수로 전달
-
     posts = Post.objects.all()
     context = {
         'posts': posts,
@@ -35,6 +29,7 @@ def post_list(request):
     }
 
     return render(request, 'posts/post_list.html', context)
+
 
 @login_required
 def post_create(request):
@@ -50,7 +45,7 @@ def post_create(request):
             post.save()
             comment_content = form.cleaned_data['comment']
 
-            #comment가 가진 content 속성에서 해시태그에 해당하는 문자열을 가져와서 HashTag객체를 가져오거나 생성
+            # comment가 가진 content 속성에서 해시태그에 해당하는 문자열을 가져와서 HashTag객체를 가져오거나 생성
             # (get or create)
             if comment_content:
                 post.comments.create(
@@ -89,6 +84,7 @@ def comment_create(request, post_pk):
             comment.save()
             return redirect('posts:post-list')
 
+
 def post_like_toggle(request, post_pk):
     # url : 'posts/postpk/like-toggle/
     # url name : posts:post-like-toggle
@@ -96,12 +92,16 @@ def post_like_toggle(request, post_pk):
 
     # request.user 가 postpk에 해당하는 post에 like toggle처리
     if request.method == 'POST':
-        post = Post.objects.all()
+        posts = Post.objects.all()
         post_like = PostLike.objects.filter(user=request.user, post_id=post_pk)
         if Post.objects.filter(pk=post_pk, like_users=request.user).exists():
             post_like.delete()
         else:
-            PostLike.objects.filter(user=request.user, post_id=post_pk).create()
+            PostLike.objects.create(user=request.user, post_id=post_pk)
 
-    context={'post': post, 'post_like':post_like}
+    context = {
+        'post': posts,
+        'post_like': post_like,
+        'comment_form': CommentForm(),
+    }
     return render(request, 'posts/post_list.html', context)
