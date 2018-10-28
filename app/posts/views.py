@@ -100,7 +100,7 @@ def post_like_toggle(request, post_pk):
             PostLike.objects.create(user=request.user, post_id=post_pk)
 
     context = {
-        'post': posts,
+        'posts': posts,
         'post_like': post_like,
         'comment_form': CommentForm(),
     }
