@@ -16,7 +16,13 @@
                         <img src="{{ post.photo.url }}" class="card-img-top">
                         <form action="{% url 'posts:post-like-toggle' post_pk=post.pk %}" method="POST">
                             {% csrf_token %}
-                            <button class="btn btn-primary" type="submit">like/unlike</button>
+                            <button class="btn btn-primary" type="submit">
+                                {% if post_like %}
+                                    unlike
+                                {% else %}
+                                    like
+                                {% endif %}
+                            </button>
                         </form>
 
                         <ul class="list-unstyled">
