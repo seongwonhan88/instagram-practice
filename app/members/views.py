@@ -1,6 +1,10 @@
+import json
+
+import requests
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from .forms import LoginForms, SignupForms, UserProfileForm
@@ -97,3 +101,25 @@ def profile(request):
     }
     return render(request, 'members/profile.html', context)
 
+def facebook_login(request):
+    api_get_access_token = 'https://graph.facebook.com/v3.2/oauth/access_token?'
+    code = request.GET.get('code')
+    #request token to access token using 'requests'
+
+    params = {
+        'client_id':546322495811516,
+        'redirect_uri': 'http://localhost:8000/members/facebook-login/',
+        'client_secret': '89b404f73b361c3310d84affdac99f72',
+        'code':code
+    }
+
+
+    response = requests.get(api_get_access_token,params)
+    # response_object = json.loads(response.text)
+    # # return HttpResponse('{}, {}'.format(response_object, type(response_object)))
+
+    data = response.json()
+    access=token = data['access_token']
+
+    # using access token to bring user info
+    pass
