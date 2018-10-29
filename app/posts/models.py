@@ -105,3 +105,8 @@ class PostLike(models.Model):
         unique_together=(
             ('user','post'),
         )
+
+    def like_toggle(self, user):
+        postlike, postlike_created = self.postlike_set.get_or_created(user=user)
+        if not postlike_created:
+            postlike.delete()

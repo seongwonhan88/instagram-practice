@@ -93,6 +93,7 @@ def post_like_toggle(request, post_pk):
     # request.user 가 postpk에 해당하는 post에 like toggle처리
     posts = Post.objects.all()
     post = Post.objects.get(pk=post_pk)
+
     if request.method == 'POST':
         if PostLike.objects.filter(post=post, user=request.user).exists():
             post_like = PostLike.objects.filter(user=request.user, post=post)

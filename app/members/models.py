@@ -4,6 +4,8 @@ from django.db import models
 
 
 # Create your models here.
+from posts.models import PostLike
+
 
 class User(AbstractUser):
     img_profile = models.ImageField(
@@ -24,8 +26,9 @@ class User(AbstractUser):
         return static('images/blank_user.png')
 
     def like_post_toggle(self, post):
-        # 전달받은 post에 대한 like를 toggle 처리
-        pass
+        postlike, postlike_created = self.postlike_set.get_or_create(post=post)
+        if not postlike_created:
+            postlike.delete()
 
     class Meta:
         verbose_name = '사용자'
