@@ -1,7 +1,8 @@
 import re
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 
 from .forms import CommentForm, PostForm
 from .models import Post, HashTag, PostLike
@@ -91,19 +92,8 @@ def post_like_toggle(request, post_pk):
     # post method only
 
     # request.user 가 postpk에 해당하는 post에 like toggle처리
-    posts = Post.objects.all()
-    post = Post.objects.get(pk=post_pk)
-
     if request.method == 'POST':
-        if PostLike.objects.filter(post=post, user=request.user).exists():
-            post_like = PostLike.objects.filter(user=request.user, post=post)
-            post_like.delete()
-        else:
-            post_like=PostLike.objects.create(user=request.user, post=post)
-
-    context = {
-        'posts': posts,
-        'post_like': post_like,
-        'comment_form': CommentForm(),
-    }
-    return render(request, 'posts/post_list.html', context)
+        post = get_object_or_404(Post, pk=post_pk)
+        post.like_toggle(request.user)
+        url = reverse('posts:post-list')
+        return redirect(url+f'#post-{post_pk}')

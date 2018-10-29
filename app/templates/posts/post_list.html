@@ -3,7 +3,7 @@
 {% block content %}
     <div>
         {% for post in posts %}
-            <div class="col col-lg-4 offset-lg-4 mb-4">
+            <div id="post-{{ post.pk }}" class="col col-lg-4 offset-lg-4 mb-4">
                 <div class='card'>
                     <div class="card-header">
                         <span><a href="">
@@ -14,17 +14,18 @@
                     </div>
                     <div class="card-body">
                         <img src="{{ post.photo.url }}" class="card-img-top">
+                        {% if user.is_authenticated %}
                         <form action="{% url 'posts:post-like-toggle' post_pk=post.pk %}" method="POST">
                             {% csrf_token %}
                             <button class="btn btn-primary" type="submit">
-                                {% if post_like %}
+                                {% if user in post.like_users.all %}
                                     unlike
                                 {% else %}
                                     like
                                 {% endif %}
                             </button>
                         </form>
-
+                        {% endif %}
                         <ul class="list-unstyled">
                         <div>
                             <span>liked</span>

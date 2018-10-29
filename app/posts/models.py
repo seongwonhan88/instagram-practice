@@ -3,8 +3,6 @@ import re
 from django.db import models
 from django.conf import settings
 
-from members.forms import User
-
 
 class Post(models.Model):
     author = models.ForeignKey(
@@ -25,7 +23,9 @@ class Post(models.Model):
     )
 
     def like_toggle(self, user):
-        pass
+        postlike, postlike_created = self.postlike_set.get_or_create(user=user)
+        if not postlike_created:
+            postlike.delete()
 
 
     class Meta:
@@ -106,7 +106,3 @@ class PostLike(models.Model):
             ('user','post'),
         )
 
-    def like_toggle(self, user):
-        postlike, postlike_created = self.postlike_set.get_or_created(user=user)
-        if not postlike_created:
-            postlike.delete()
