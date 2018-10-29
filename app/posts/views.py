@@ -84,20 +84,21 @@ def comment_create(request, post_pk):
             comment.save()
             return redirect('posts:post-list')
 
-
+@login_required
 def post_like_toggle(request, post_pk):
     # url : 'posts/postpk/like-toggle/
     # url name : posts:post-like-toggle
     # post method only
 
     # request.user 가 postpk에 해당하는 post에 like toggle처리
+    posts = Post.objects.all()
+    post = Post.objects.get(pk=post_pk)
     if request.method == 'POST':
-        posts = Post.objects.all()
-        post_like = PostLike.objects.filter(user=request.user, post_id=post_pk)
-        if Post.objects.filter(pk=post_pk, like_users=request.user).exists():
+        if PostLike.objects.filter(post=post, user=request.user).exists():
+            post_like = PostLike.objects.filter(user=request.user, post=post)
             post_like.delete()
         else:
-            PostLike.objects.create(user=request.user, post_id=post_pk)
+            post_like=PostLike.objects.create(user=request.user, post=post)
 
     context = {
         'posts': posts,
