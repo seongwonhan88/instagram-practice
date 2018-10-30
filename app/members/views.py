@@ -1,14 +1,19 @@
+import imghdr
+import io
 import json
+from pprint import pprint
 
 import requests
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from .forms import LoginForms, SignupForms, UserProfileForm
 
+User = get_user_model()
 
 def login_view(request):
     # url : /members/login/
@@ -102,7 +107,9 @@ def profile(request):
     return render(request, 'members/profile.html', context)
 
 def facebook_login(request):
-    api_get_access_token = 'https://graph.facebook.com/v3.2/oauth/access_token?'
+    api_base = 'https://graph.facebook.com/v3.2'
+    api_get_access_token = f'{api_base}/oauth/access_token?'
+    api_me = f'{api_base}/me'
     code = request.GET.get('code')
     #request token to access token using 'requests'
 
@@ -113,13 +120,52 @@ def facebook_login(request):
         'code':code
     }
 
-
     response = requests.get(api_get_access_token,params)
     # response_object = json.loads(response.text)
     # # return HttpResponse('{}, {}'.format(response_object, type(response_object)))
 
     data = response.json()
-    access=token = data['access_token']
+    access_token = data['access_token']
 
     # using access token to bring user info
-    pass
+
+    params = {
+        'access_token' : access_token,
+        'fields':', '.join([
+            'id',
+            'first_name',
+            'last_name',
+            'picture.type(large)',
+        ]),
+    }
+    response = requests.get(api_me,params)
+    data = response.json()
+    pprint(data)
+
+    facebook_id = data['id']
+    first_name = data['first_name']
+    last_name = data['last_name']
+    url_img_profile = data['picture']['data']['url']
+    # requesting for image url
+    img_response = requests.get(url_img_profile)
+    img_data = img_response.content
+    # extension finder from binary
+    ext = imghdr.what('',h=img_data)
+    # first parameter for name, and second for binary file
+    f = SimpleUploadedFile(f'{facebook_id}.{ext}', img_response.content)
+    try:
+        user = User.objects.get(username=facebook_id)
+        user.last_name = last_name
+        user.first_name = first_name
+        # user.img_profile = f
+        user.save()
+
+    except User.DoesNotExist:
+        user = User.objects.create_user(
+        username=facebook_id,
+        first_name=first_name,
+        last_name=last_name,
+        img_profile=f,)
+
+    login(request, user)
+    return redirect('posts:post-list')
