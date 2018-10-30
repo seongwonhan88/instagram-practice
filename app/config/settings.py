@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
-
+import json
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -20,17 +20,22 @@ MEDIA_URL = '/media/'#유저가 업로드한 파일에 접근 prefix URL(setting
 STATIC_URL = '/static/'
 TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
-
 STATICFILES_DIRS = [
     STATIC_DIR
 ]
+SECRETS_DIR = os.path.join(ROOT_DIR,'.secrets')
+
 LOGIN_URL = 'members:login-view'
+
+# json file load from media
+secrets = json.load(open(os.path.join(SECRETS_DIR, 'base.json')))
+FACEBOOK_APP_ID = secrets['FACEBOOK_APP_ID']
+FACEBOOK_APP_SECRET = secrets['FACEBOOK_APP_SECRET']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '9no$%vn^4aayisy63w=ruwmhmgqu!854o=6&3r)!fs9epq*#w4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
