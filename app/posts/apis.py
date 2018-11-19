@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from rest_framework import permissions, status
 from rest_framework import generics
-from rest_framework.exceptions import NotAuthenticated
+from rest_framework.exceptions import NotAuthenticated, APIException
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -51,16 +51,18 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class PostLikeCreate(APIView):
     permission_classes = (permissions.IsAuthenticated,)
+
     def post(self, request, post_pk):
-        user = request.user
-        post = get_object_or_404(Post, pk=post_pk)
-        if PostLike.objects.filter(user=user, post=post).exists():
-            data = {
-                'detail': '이미 좋아요를 누른 포스트입니다'
-            }
-            return Response(data, status=status.HTTP_400_BAD_REQUEST)
-        post_like = PostLike.objects.create(user=user, post=post)
-        return Response(status=status.HTTP_201_CREATED)
+        serializer = PostLikeSerializer(data={**request.data,'post': post_pk}, context={'request':request})
+        if serializer.is_valid():
+            if PostLike.objects.filter(
+                post=serializer.validated_data['post'],
+                user=request.user
+            ).exists():
+                raise APIException('이미 좋아요 한 포스트 입니다')
+            serializer.save()
+            return Response(serializer, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PostLikeDelete(APIView):
     queryset = PostLike.objects.all()
