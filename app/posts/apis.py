@@ -9,7 +9,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly, IsOwner
 from .serializers import PostListSerializer, UserSerializer, CommentSerializer, PostLikeSerializer
 from .models import HashTag, Post, Comment, PostLike
 
@@ -19,7 +19,7 @@ class PostList(generics.ListCreateAPIView):
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
     )
-    queryset = Post.objects.all()
+    queryset = Post.objects.select_related('author').prefetch_related('comments','comments__author')
     serializer_class = PostListSerializer
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -49,7 +49,7 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
 #     queryset = Comment.objects.all()
 #     serializer_class = CommentSerializer
 
-class PostLikeCreate(APIView):
+class PostLikeCreateDestroy(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, post_pk):
@@ -64,10 +64,31 @@ class PostLikeCreate(APIView):
             return Response(serializer, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+    def delete(self, request, post_pk):
+        post = get_object_or_404(Post, pk=post_pk)
+        post_like = get_object_or_404(PostLike, post=post, user=request.user)
+        post_like.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 class PostLikeDelete(APIView):
     queryset = PostLike.objects.all()
     serializer_class = PostLikeSerializer
     permission_classes = (IsOwnerOrReadOnly, permissions.IsAuthenticatedOrReadOnly)
+
+
+class PostLikeCreateAPIView(generics.CreateAPIView):
+    queryset = PostLike.objects.all()
+    serializer_class = PostLikeSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+
+class PostLikeDestroyAPIView(generics.DestroyAPIView):
+    queryset = PostLike.objects.all()
+    serializer_class = PostLikeSerializer
+    permission_classes = (IsOwner, permissions.IsAuthenticatedOrReadOnly)
+
 
 
 

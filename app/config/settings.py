@@ -27,6 +27,8 @@ SECRETS_DIR = os.path.join(ROOT_DIR, '.secrets')
 
 LOGIN_URL = 'members:login-view'
 
+INTERNAL_IPS = ['127.0.0.1']
+
 # json file load from media
 secrets = json.load(open(os.path.join(SECRETS_DIR, 'base.json')))
 FACEBOOK_APP_ID = secrets['FACEBOOK_APP_ID']
@@ -42,7 +44,7 @@ SECRET_KEY = 'secrets[SECRET_KEY]'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
 
 AUTH_USER_MODEL = 'members.User'
 
@@ -64,6 +66,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'rest_framework',
+    'rest_framework.authtoken',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -74,6 +78,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'config.middleware.CustomMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'

@@ -1,34 +1,42 @@
-"""config URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/2.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
 from config import views, settings
-from posts import apis
+from posts import apis as post_apis
+from members import apis as members_apis
 from posts.views import tag_post_list
 
 app_name = "config"
 
+
+
 ## app name tuple
+urlpatterns_api_posts = ([
+    path('posts/', post_apis.PostList.as_view(), name='post-list'),
+    path('posts/<int:pk>/', post_apis.PostDetail.as_view(), name='post-detail'),
+    path('posts/<int:post_pk>/like/', post_apis.PostLikeCreateDestroy.as_view(), name='post-like'),
+    path('posts/<int:post_pk>/unlike/', post_apis.PostLikeCreateDestroy.as_view(), name='post-unlike'),
+    path('postlike/', post_apis.PostLikeCreateAPIView.as_view()),
+    path('postlike/<int:pk>/', post_apis.PostLikeDestroyAPIView.as_view()),
+], 'posts')
+
+
+urlpatterns_api_members = ([
+    path('auth-token/', members_apis.AuthTokenView.as_view()),
+    path('user/<int:pk>/', members_apis.UserDetail.as_view()),
+    path('user/profile/', members_apis.UserDetail.as_view()),
+    path('view/<int:pk>/', members_apis.UserDetailAPIView.as_view()),
+    path('view/profile/', members_apis.UserDetailAPIView.as_view()),
+], 'members')
+
+
 urlpatterns_api = ([
-    path('posts/', apis.PostList.as_view(), name='post-list'),
-    path('posts/<int:pk>/', apis.PostDetail.as_view(), name='post-detail'),
-    path('posts/<int:post_pk>/like/', apis.PostLikeCreate.as_view(), name='post-like'),
+    path('posts/', include(urlpatterns_api_posts)),
+    path('members/', include((urlpatterns_api_members)))
 ], 'api')
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -47,3 +55,13 @@ urlpatterns += static(
     prefix=settings.MEDIA_URL,
     document_root=settings.MEDIA_ROOT
 )
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+
+        # For django versions before 2.0:
+        # url(r'^__debug__/', include(debug_toolbar.urls)),
+
+    ] + urlpatterns

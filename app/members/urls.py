@@ -1,5 +1,6 @@
 from django.urls import path
-from . import views
+
+from . import views, apis
 
 app_name = 'members'
 
@@ -8,5 +9,5 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout-view'),
     path('signup/', views.signup_view, name='signup-view'),
     path('profile/', views.profile, name='profile'),
-    path('facebook-login/', views.facebook_login, name='facebook-login')
+    path('facebook-login/', views.facebook_login, name='facebook-login'),
 ]
